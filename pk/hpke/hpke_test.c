@@ -1,6 +1,6 @@
 /* hpke_test.c
  *
- * Copyright (C) 2022 wolfSSL Inc.
+ * Copyright (C) 2023 wolfSSL Inc.
  *
  * This file is part of wolfSSL. (formerly known as CyaSSL)
  *
@@ -145,13 +145,27 @@ int main(void)
         goto fail;
 #endif
 
+#if defined(HAVE_CURVE448)
+    /* test with curve448 and aes512 */
+    ret = wc_HpkeInit(hpke, DHKEM_X448_HKDF_SHA512, HKDF_SHA512,
+        HPKE_AES_256_GCM, NULL);
+
+    if (ret != 0)
+        goto fail;
+
+    ret = test_hpke(hpke);
+
+    if (ret != 0)
+        goto fail;
+#endif
+
     printf("HPKE test success\n");
 
     return ret;
 
 fail:
     printf("HPKE test error %d: %s\n", ret, wc_GetErrorString(ret));
-/* x448 and chacha20 are unimplemented */
+/* chacha20 are unimplemented */
     return 1;
 }
 #else
